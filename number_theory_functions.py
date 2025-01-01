@@ -7,7 +7,7 @@ def gcd(a,b):
         return a
     return gcd(b,a%b)
 
-def extended_gcd(a,b):
+def extended_gcd2(a,b):
     """
     Returns the extended gcd of a and b
 
@@ -32,13 +32,37 @@ def extended_gcd(a,b):
     my_list = list()
     MAX = max(A,B)
     MIN = A+B-MAX
-    while MAX != MIN:
+    while MIN != 0:
         arg1 = MAX
         arg2 = MAX//MIN
-        arg3 =  
+        arg3 = MIN
+        arg4 = MAX%MIN
+        my_list.append((arg1,arg2,arg3,arg4))
+        MAX = MIN
+        MIN = arg4
+    my_list = my_list[:-1]
+    pass     
 
-        
+def extended_gcd(a,b):
+    """
+    Returns the extended gcd of a and b
 
+    Parameters
+    ----------
+    a : Input data.
+    b : Input data.
+    Returns
+    -------
+    (d, x, y): d = gcd(a,b) = a*x + b*y
+    """
+    if b==0:
+        return (a,1,0)
+    else:
+        d,x,y = extended_gcd(b,a%b)
+        x0 = y
+        y0 = x-(a//b)*y
+        return (d,x0,y0)
+    
 def modular_inverse(a,n):
     """
     Returns the inverse of a modulo n if one exists
@@ -52,8 +76,13 @@ def modular_inverse(a,n):
     -------
     x: such that (a*x % n) == 1 and 0 <= x < n if one exists, else None
     """
-
-
+    d,x,y = extended_gcd(a,n)
+    while x<0:
+        x = x+n
+    if (d!=1):
+        return None
+    return x
+    
 def modular_exponent(a, d, n):
     """
     Returns a to the power of d modulo n
@@ -68,6 +97,15 @@ def modular_exponent(a, d, n):
     -------
     b: such that b == (a**d) % n
     """
+    a = a%n
+    res,a_pow2 = 1,a
+    while d > 0:
+        ind = d%2
+        res = (res*(a_pow2**ind))%n
+        return 0
+        a_pow2 = (a_pow2**2)%n
+        d = d//2
+    return res
 
 def miller_rabin(n):
     """
